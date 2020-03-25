@@ -11,6 +11,10 @@
     "socket.io": "^2.3.0"
   },
   "scripts": {
+    "dev-start": "set DEBUG=api:* && nodemon",
     "start": "node index.js"
+  },
+  "engines": {
+    "node": "13.9.0"
   }
 }

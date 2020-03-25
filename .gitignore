@@ -1,2 +1,5 @@
 node_modules
 .idea
+yarn-debug.log
+.DS_Store
+/*.env
