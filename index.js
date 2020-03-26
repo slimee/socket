@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
   })
 
   // when the client emits 'add user', this listens and executes
-  socket.on('add user', (username) => {
+  socket.on('login', (username) => {
     console.log('welcome', username)
     if (addedUser) return
 
