@@ -9,6 +9,7 @@ server.listen(port, () => console.log('Server listening at port %d', port))
 app.use(express.static(path.join(__dirname, 'public')))
 
 let players = []
+let games = []
 let messageCount = 0
 io.on('connection', (socket) => {
   let addedUser = false
@@ -43,5 +44,15 @@ io.on('connection', (socket) => {
       }
     },
   )
+
+  socket.on('create game', (game, respond) => {
+    games.push(game)
+    socket.join(game.id)
+    respond()
+  })
+  socket.on('list games', (nothing, respond) => {
+    console.log('list games', games)
+    respond(games)
+  })
 })
 
