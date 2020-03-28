@@ -31,10 +31,10 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('user joined', player)
   })
   socket.on('typing', () => {
-    socket.broadcast.emit('typing', { username: socket.username })
+    socket.broadcast.emit('typing', socket.player)
   })
   socket.on('stop typing', () => {
-    socket.broadcast.emit('stop typing', { username: socket.username })
+    socket.broadcast.emit('stop typing', socket.player)
   })
   socket.on('disconnect', () => {
       if (addedUser) {
