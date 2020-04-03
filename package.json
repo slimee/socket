@@ -8,11 +8,13 @@
   "license": "BSD",
   "dependencies": {
     "express": "4.13.4",
+    "jest": "^25.2.3",
     "socket.io": "^2.3.0"
   },
   "scripts": {
     "dev-start": "set DEBUG=api:* && nodemon",
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "jest"
   },
   "engines": {
     "node": "13.9.0"
