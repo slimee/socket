@@ -6,21 +6,18 @@ module.exports = class PlayerJoin {
     this.next = next
     this.roles = shuffle(this.store.getRoles().slice())
     this.name = 'join game'
-    this.emitJoin = player => {
-      return emitTo(this.store.getId(), this.name, player)
-    }
+    this.emitTo = emitTo
   }
 
   async run(player) {
     if (!PlayerJoin.isPlayer(player) || !this.canAddPlayer()) return
-
     this.store.addPlayer(player)
-    await this.emitJoin(player)
-
     if (!this.canAddPlayer()) {
       this.assignRoles()
       await this.next()
     }
+
+    await this.emitTo(this.store.getId(), this.name, player)
   }
 
   canAddPlayer() {

@@ -14,22 +14,30 @@ module.exports = class LoupGarou {
     this.playerJoin = this.makePhase(PlayerJoin)
     this.phases = [
       this.playerJoin,
-      this.makePhase(PlayerReady),
-      this.makePhase(WolfKill),
-      this.makePhase(CheckEndGame),
+      this.newPhase(PlayerReady),
+      this.newPhase(WolfKill),
+      this.newPhase(CheckEndGame),
     ]
     this.phaseIndex = -1
     this.phase = null
   }
 
+  newPhase(phaseClass, ...params) {
+    return this.exposePhase(this.makePhase(phaseClass, ...params))
+  }
+
   makePhase(phaseClass, ...params) {
-    const phase = new phaseClass({
+    return new phaseClass({
       emit: this.client.emit,
       emitTo: this.client.emitTo,
       broadcast: this.client.broadcast,
       store: this.store,
       next: this.next,
     }, ...params)
+  }
+
+
+  exposePhase(phase) {
     if (phase.name) this.client.when(
       phase.name,
       (...params) => this.run(phase.name, this.client.getUser(), ...params),
@@ -49,7 +57,7 @@ module.exports = class LoupGarou {
   }
 
   run(event, player, ...params) {
-    if(!this.phase){
+    if (!this.phase) {
       console.log(`run(${event}, ${player.name}) but no phase.`)
       return
     }
