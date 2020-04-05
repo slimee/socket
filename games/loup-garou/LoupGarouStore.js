@@ -1,41 +1,18 @@
 const { isBad, isGood } = require('./roles')
+const GameStore = require('../GameStore')
 
-module.exports = class LoupGarouStore {
-  constructor() {
-    this.initState()
+module.exports = class LoupGarouStore extends GameStore {
+  constructor(idNameHost, roles) {
+    super(idNameHost)
+    this.state.roles = Object.freeze(roles)
   }
 
-  initState() {
-    this.state = {
-      players: [],
-    }
-  }
-
-  addPlayer(player) {
-    if (this.getPlayer(player)) return
-    this.state.players.push(player)
-    return player
-  }
-
-  getPlayer(player) {
-    return LoupGarouStore.isPlayer(player)
-      && this.state.players.find(({ id }) => player.id === id)
-  }
-
-  getPlayersCount() {
-    return this.state.players.length
+  getRoles() {
+    return this.state.roles
   }
 
   assignRoles(playerIndex, role) {
     this.state.players[playerIndex].role = role
-  }
-
-  static isPlayer({ id, name }) {
-    return id && name
-  }
-
-  isInPlayers(player) {
-    return !!this.getPlayer(player)
   }
 
   isPlayerRole(player, role) {

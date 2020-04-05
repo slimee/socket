@@ -1,4 +1,4 @@
-const makeMiddlewareMock = require('../middleware.mock')
+const makeMiddlewareMock = require('./middleware.mock')
 
 describe('middleware', () => {
   describe('chat', () => {

@@ -7,7 +7,7 @@ module.exports = class PlayerJoin {
     this.emitEndGame = () => emit(this.name, this.store)
   }
 
-  init() {
+  start() {
     if (this.store.aTeamIsDead()) {
       this.emitEndGame()
       this.next()

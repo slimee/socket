@@ -14,8 +14,11 @@ module.exports = class GlobalStore {
     return this.state.users
   }
 
-  getGames() {
-    return this.state.games
+  getGamesList() {
+    return this.state.games.map(game => ({
+      id: game.getId(),
+      name: game.getName(),
+    }))
   }
 
   addUser(user) {
@@ -47,16 +50,15 @@ module.exports = class GlobalStore {
       && this.state.users.find(({ id }) => user.id === id)
   }
 
-  getGame(game) {
-    return GlobalStore.isGame(game)
-      && this.state.games.find(({ id }) => game.id === id)
+  getGame(id) {
+      return this.state.games.find((game) => game.getId() === id)
   }
 
   static isUser({ id, name }) {
     return id && name
   }
 
-  static isGame({ id, name }) {
-    return id && name
+  static isGame({ id }) {
+    return id
   }
 }
