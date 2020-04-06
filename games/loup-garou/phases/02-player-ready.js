@@ -1,23 +1,19 @@
-module.exports = class WolfKill {
-  contructor({ store, emit, next }) {
+module.exports = class PlayerReady {
+  constructor({ store, next }) {
     this.store = store
     this.next = next
     this.name = 'player ready'
-    this.emitPlayerJoin = player => emit(this.name, player)
+    this.readyPlayers = []
   }
 
-  canAddPlayer() {
-    return this.store.getPlayersCount() < this.roles.length
-  }
+  async run(client) {
+    const player = client.getUser()
+    if (!this.store.isInPlayers(player)) return { error: 'not in players' }
+    if (this.readyPlayers.find(readyPlayer => readyPlayer.id === player.id)) return { error: 'already ready' }
 
-  async run(player) {
-    if (this.store.isInPlayers(player)) return
+    this.readyPlayers.push(player)
+    await client.emitTo(this.store.getId(), 'player ready', player)
 
-    this.store.addPlayer(player)
-    await this.emitPlayerJoin(player)
-
-    if (!this.canAddPlayer()) {
-      await this.next()
-    }
+    if (this.readyPlayers.length === this.store.getPlayersCount()) this.next()
   }
 }

@@ -7,62 +7,60 @@ const LoupGarouStore = require('./LoupGarouStore')
 
 module.exports = class LoupGarou {
   constructor(
-    client, { id = uuid(), name, host },
-    roles = ['LG', 'LG', 'Vil', 'Vil', 'Voy', 'Vol', 'Sor']) {
-    this.client = client
+    hostClient,
+    { id = uuid(), name, host },
+    { roles = ['LG', 'LG', 'Vil', 'Vil', 'Voy', 'Vol', 'Sor'] },
+  ) {
+    this.hostClient = hostClient
     this.store = new LoupGarouStore({ id, name, host }, roles)
     this.playerJoin = this.makePhase(PlayerJoin)
     this.phases = [
       this.playerJoin,
-      this.newPhase(PlayerReady),
-      this.newPhase(WolfKill),
-      this.newPhase(CheckEndGame),
+      this.makePhase(PlayerReady),
+      this.makePhase(WolfKill),
+      this.makePhase(CheckEndGame),
     ]
     this.phaseIndex = -1
     this.phase = null
   }
 
-  newPhase(phaseClass, ...params) {
-    return this.exposePhase(this.makePhase(phaseClass, ...params))
-  }
-
   makePhase(phaseClass, ...params) {
     return new phaseClass({
-      emit: this.client.emit,
-      emitTo: this.client.emitTo,
-      broadcast: this.client.broadcast,
       store: this.store,
-      next: this.next,
+      broadcast: () => this.hostClient.broadcast,
+      next: () => this.next(),
     }, ...params)
   }
 
-
-  exposePhase(phase) {
-    if (phase.name) this.client.when(
-      phase.name,
-      (...params) => this.run(phase.name, this.client.getUser(), ...params),
-    )
-    return phase
+  addPlayer(client) {
+    for (let phase of this.phases) {
+      if (phase.events) {
+        for (let event of phase.events) {
+          client.when(event, (...params) => this.run(event, client, ...params))
+        }
+      } else {
+        client.when(phase.name, (...params) => this.run(phase.name, client, ...params))
+      }
+    }
+    return this.playerJoin.run(client)
   }
 
-  addPlayer(player) {
-    return this.playerJoin.run(player)
+  run(event, client, ...params) {
+    if (!this.phase) {
+      console.log(`run(${event}, ${client.getUser().name}) but no phase.`)
+      return
+    }
+    if (event === this.phase.name) return this.phase.run(client, ...params)
+    if (this.phase.events && this.phase.events.includes(event)) return this.phase[event](client, ...params)
+    console.log(`run ${event} !== ${this.phase.name} by ${client && client.getUser() && client.getUser().name}`)
   }
 
   async next() {
     this.phaseIndex++
     this.phase = this.phases[this.phaseIndex]
     this.phase.start && await this.phase.start()
-    await this.client.emit(`enter: ${this.phase.name}`, this.store.state)
-  }
-
-  run(event, player, ...params) {
-    if (!this.phase) {
-      console.log(`run(${event}, ${player.name}) but no phase.`)
-      return
-    }
-    if (event !== this.phase.name) return
-    return this.phase.run(player, ...params)
+    this.store.setPhase(this.phase.name)
+    await this.hostClient.emitTo(this.getId(), `start phase: ${this.phase.name}`, this.store.state)
   }
 
   getId() {

@@ -2,11 +2,12 @@ const LoupGarou = require('../games/loup-garou/LoupGarou')
 
 module.exports = (client, globalStore) => {
 
-  client.when('create game', async ({ id, name }) => {
-    if (!client.user) return
-    const game = new LoupGarou(client, { id, name, host: client.user })
+  client.when('create game', async ({ id, name }, config = {}) => {
+    if (!client.getUser()) return
+    const game = new LoupGarou(client, { id, name, host: client.getUser() }, config)
     globalStore.addGame(game)
     await game.next()
+    await client.broadcast('game created', game.getStore())
   })
 
   client.when('list games', () => ({ games: globalStore.getGamesList() }))
@@ -14,7 +15,8 @@ module.exports = (client, globalStore) => {
   client.when('join game', async (gameId) => {
     const game = globalStore.getGame(gameId)
     if (!game) return
-    await game.addPlayer(client.user)
-    await client.join(gameId, client.user)
+    await game.addPlayer(client)
+    await client.join(gameId, client.getUser())
+    return game
   })
 }

@@ -1,4 +1,4 @@
-const makeMiddlewareMock = require('./middleware.mock')
+const makeMiddlewareMock = require('./mock/middleware.mock')
 
 describe('middleware', () => {
   test('login 1 player', () => {
@@ -6,7 +6,7 @@ describe('middleware', () => {
     player1.send['login']({ id: 1, name: 'mario' })
 
     expect(player1.broadcasts).toEqual([{
-      'event': 'user joined',
+      'event': 'user login',
       'payload': { 'id': 1, 'name': 'mario' },
     }])
     expect(middleware.store.state).toEqual({ 'users': [{ 'id': 1, 'name': 'mario' }], 'games': [] })
@@ -18,15 +18,15 @@ describe('middleware', () => {
 
     player1.send['login']({ id: 1, name: 'mario' })
     expect(player1.broadcasts).toEqual([{
-      'event': 'user joined',
+      'event': 'user login',
       'payload': { 'id': 1, 'name': 'mario' },
     }])
 
     player1.send['disconnect']({ id: 1, name: 'mario' })
     expect(middleware.store.state).toEqual({ 'users': [], 'games': [] })
     expect(player1.broadcasts).toEqual([
-      { 'event': 'user joined', 'payload': { 'id': 1, 'name': 'mario' } },
-      { 'event': 'user left', 'payload': { 'id': 1, 'name': 'mario' } },
+      { 'event': 'user login', 'payload': { 'id': 1, 'name': 'mario' } },
+      { 'event': 'user logout', 'payload': { 'id': 1, 'name': 'mario' } },
     ])
   })
 })

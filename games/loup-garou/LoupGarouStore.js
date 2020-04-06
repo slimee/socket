@@ -5,14 +5,28 @@ module.exports = class LoupGarouStore extends GameStore {
   constructor(idNameHost, roles) {
     super(idNameHost)
     this.state.roles = Object.freeze(roles)
+    this.state.phase = 'created'
+  }
+
+  setPhase(value) {
+    this.state.phase = value
   }
 
   getRoles() {
     return this.state.roles
   }
 
-  assignRoles(playerIndex, role) {
-    this.state.players[playerIndex].role = role
+  getPlayerRole(player) {
+    if (!this.isInPlayers(player)) return
+    return this.state.roles[this.getPlayerIndex(player)]
+  }
+
+  hasRole(role) {
+    return this.getPlayersByRole(role).length > 0
+  }
+
+  getPlayersByRole(role) {
+    return this.state.players.filter(player => this.getPlayerRole(player) === role)
   }
 
   isPlayerRole(player, role) {

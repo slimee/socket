@@ -38,8 +38,12 @@ module.exports = class GameStore {
     return player
   }
 
-  getPlayer(playerId) {
-    this.state.players.find(({ id }) => playerId === id)
+  getPlayer(player) {
+    return this.state.players.find(({ id }) => player.id === id)
+  }
+
+  getPlayerIndex(playerId) {
+    return this.state.players.findIndex(({ id }) => playerId === id)
   }
 
   getPlayersCount() {

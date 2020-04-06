@@ -1,23 +1,22 @@
 const shuffle = require('../../../util/shuffle')
 
 module.exports = class PlayerJoin {
-  constructor({ store, emitTo, next }) {
+  constructor({ store, next }) {
     this.store = store
     this.next = next
     this.roles = shuffle(this.store.getRoles().slice())
     this.name = 'join game'
-    this.emitTo = emitTo
   }
 
-  async run(player) {
-    if (!PlayerJoin.isPlayer(player) || !this.canAddPlayer()) return
-    this.store.addPlayer(player)
-    if (!this.canAddPlayer()) {
-      this.assignRoles()
-      await this.next()
-    }
+  async run(client) {
+    const player = client.getUser()
+    if (!PlayerJoin.isPlayer(player)) return { error: 'not a player' }
+    if (!this.canAddPlayer()) return { error: 'can\'t add more player' }
 
-    await this.emitTo(this.store.getId(), this.name, player)
+    this.store.addPlayer(player)
+    await client.emitTo(this.store.getId(), this.name, player)
+
+    if (!this.canAddPlayer()) await this.next()
   }
 
   canAddPlayer() {
@@ -26,11 +25,5 @@ module.exports = class PlayerJoin {
 
   static isPlayer({ id, name }) {
     return id && name
-  }
-
-  assignRoles() {
-    for (let i = 0; i < this.store.getPlayersCount(); i++) {
-      this.store.assignRoles(i, this.roles.pop())
-    }
   }
 }

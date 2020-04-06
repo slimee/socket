@@ -1,5 +1,5 @@
-module.exports = class PlayerJoin {
-  contructor({ store, emit, next }, roles) {
+module.exports = class CheckEndGame {
+  constructor({ store, emit, next }, roles) {
     this.store = store
     this.next = next
     this.name = 'end game'

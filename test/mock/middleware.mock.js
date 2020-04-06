@@ -1,4 +1,4 @@
-const Middleware = require('../middleware/index')
+const Middleware = require('../../middleware')
 const ClientMock = require('./client.mock')
 
 module.exports = playerCount => {
@@ -10,16 +10,14 @@ module.exports = playerCount => {
     mocks.push(mock)
   }
   return {
-    player: mocks[0],
+    hostPlayer: mocks[0],
     player1: mocks[0],
     player2: mocks[1],
+    player3: mocks[2],
     middleware,
     mocks,
     globalState: middleware.store.state,
     gameState: () => middleware.store.state.games[0] && middleware.store.state.games[0].store.state,
-    gameOneState: () => middleware.store.state.games[0] && middleware.store.state.games[0].store.state,
-    gameTwoState: () => middleware.store.state.games[1] && middleware.store.state.games[1].store.state,
-    gameThreeState: () => middleware.store.state.games[2] && middleware.store.state.games[2].store.state,
     clearOutput: () => {
       for (let i = 0; i < mocks.length; i++) {
         mocks[i].broadcasts.length = 0

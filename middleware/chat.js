@@ -1,18 +1,17 @@
 let id = 0
 module.exports = client => {
 
-  client.when('typing', () => client.user && client.broadcast('typing', client.user))
+  client.when('typing', () => client.getUser() && client.broadcast('typing', client.getUser()))
 
   client.when('new message', (content) => {
-    if (!client.user) return
+    if (!client.getUser()) return
     const message = {
       id: id++,
-      player: client.user,
+      player: client.getUser(),
       content,
     }
-    client.emit('new message', message)
     client.broadcast('new message', message)
   })
 
-  client.when('stop typing', () => client.user && client.broadcast('stop typing', client.user))
+  client.when('stop typing', () => client.getUser() && client.broadcast('stop typing', client.getUser()))
 }
