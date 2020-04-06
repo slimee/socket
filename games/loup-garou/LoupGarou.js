@@ -1,8 +1,9 @@
 const uuid = require('../../services/uuid')
-const CheckEndGame = require('../loup-garou/phases/00-check-end-game')
-const PlayerJoin = require('../loup-garou/phases/01-player-join')
-const PlayerReady = require('../loup-garou/phases/02-player-ready')
-const WolfKill = require('../loup-garou/phases/03-wolf-kill')
+const CheckEndGame = require('../loup-garou/phases/000-check-end-game')
+const PlayerJoin = require('../loup-garou/phases/010-player-join')
+const PlayerReady = require('../loup-garou/phases/020-player-ready')
+const DispatchPersonalRoles = require('../loup-garou/phases/025-dispatch-personal-roles')
+const WolfKill = require('../loup-garou/phases/030-wolf-kill')
 const LoupGarouStore = require('./LoupGarouStore')
 
 module.exports = class LoupGarou {
@@ -17,6 +18,7 @@ module.exports = class LoupGarou {
     this.phases = [
       this.playerJoin,
       this.makePhase(PlayerReady),
+      this.makePhase(DispatchPersonalRoles),
       this.makePhase(WolfKill),
       this.makePhase(CheckEndGame),
     ]
@@ -58,9 +60,9 @@ module.exports = class LoupGarou {
   async next() {
     this.phaseIndex++
     this.phase = this.phases[this.phaseIndex]
-    this.phase.start && await this.phase.start()
-    this.store.setPhase(this.phase.name)
     await this.hostClient.emitTo(this.getId(), `start phase: ${this.phase.name}`, this.store.state)
+    this.store.setPhase(this.phase.name)
+    this.phase.start && await this.phase.start()
   }
 
   getId() {

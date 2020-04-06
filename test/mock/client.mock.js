@@ -1,3 +1,5 @@
+const uuid = require('../../services/uuid')
+
 module.exports = function ClientMock() {
   const send = {}
   const broadcasts = []
@@ -5,6 +7,7 @@ module.exports = function ClientMock() {
   const emitsTo = []
   const joins = []
   const client = {
+    id: uuid(),
     setUser: (user) => client.user = user,
     getUser: () => client.user,
     when: (event, callback) => send[event] = callback,

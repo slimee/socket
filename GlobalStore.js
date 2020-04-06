@@ -5,6 +5,7 @@ module.exports = class GlobalStore {
 
   initState() {
     this.state = {
+      clients: [],
       users: [],
       games: [],
     }
@@ -19,6 +20,17 @@ module.exports = class GlobalStore {
       id: game.getId(),
       name: game.getName(),
     }))
+  }
+
+  addClient(client){
+    this.state.clients.push(client)
+    this.addUser(client.getUser())
+  }
+
+  removeClient(client){
+    const index = this.state.clients.findIndex(stateClient => stateClient.id === client.id)
+    if (index >= 0) this.state.clients.splice(index, 1)
+    return this.removeUser(client.getUser())
   }
 
   addUser(user) {

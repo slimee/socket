@@ -3,7 +3,7 @@ const makeMiddlewareMock = require('./mock/middleware.mock')
 describe('middleware', () => {
   describe('loup garou', () => {
     test('player ready', async () => {
-      const { player1: mario, player2: luigi, clearOutput } = makeMiddlewareMock(2)
+      const { player1: mario, player2: luigi, startRecordOutput } = makeMiddlewareMock(2)
 
       await mario.send['login']({ id: 1, name: 'mario' })
       await luigi.send['login']({ id: 2, name: 'luigi' })
@@ -11,7 +11,7 @@ describe('middleware', () => {
       await mario.send['join game']('mario.game.id')
       await luigi.send['join game']('mario.game.id')
 
-      clearOutput()
+      startRecordOutput()
 
       await mario.send['player ready']()
       await luigi.send['player ready']()
@@ -27,11 +27,11 @@ describe('middleware', () => {
           },
           {
             'to': 'mario.game.id',
-            'event': 'start phase: wolf kill',
+            'event': 'start phase: dispatch personal roles',
             'payload': {
               host: { 'id': 1, 'name': 'mario' },
               'id': 'mario.game.id', 'name': 'mario.game.id',
-              'phase': 'wolf kill',
+              'phase': 'dispatch personal roles',
               'players': [
                 { 'id': 1, 'name': 'mario' },
                 { 'id': 2, 'name': 'luigi' },
@@ -59,7 +59,7 @@ describe('middleware', () => {
     test('wolf kill', async () => {
       const {
         player1: mario, player2: luigi,
-        gameState, clearOutput,
+        gameState, startRecordOutput,
       } = makeMiddlewareMock(2)
 
       await mario.send['login']({ id: 1, name: 'mario' })
@@ -69,13 +69,13 @@ describe('middleware', () => {
       await luigi.send['join game']('mario.game.id')
       await mario.send['player ready']()
       await luigi.send['player ready']()
-      clearOutput()
+      startRecordOutput()
 
       expect(gameState()).toEqual({
         'host': { 'id': 1, 'name': 'mario' },
         'id': 'mario.game.id',
         'name': 'mario.game.id',
-        'phase': 'wolf kill',
+        'phase': 'dispatch personal roles',
         'players': [
           { 'id': 1, 'name': 'mario' },
           { 'id': 2, 'name': 'luigi' },

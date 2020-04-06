@@ -17,15 +17,15 @@ describe('middleware', () => {
       )
     })
     test('create game', async () => {
-      const { hostPlayer, globalState, gameState, clearOutput } = makeMiddlewareMock(1)
+      const { hostPlayer, globalState, gameState, startRecordOutput } = makeMiddlewareMock(1)
 
       await hostPlayer.send['login']({ id: 1, name: 'mario' })
-      clearOutput()
+      startRecordOutput()
       await hostPlayer.send['create game']({ id: 'game.id', name: 'table 6' })
 
       expect(globalState.games).toHaveLength(1)
       expect(gameState()).toEqual({
-        'id': 'game.id', 'name': 'table 6', 'host': { 'id': 1, 'name': 'mario' },
+        'id': 'game.id', 'name': 'table 6',  'host': { 'id': 1, 'name': 'mario' },
         'phase': 'join game',
         'players': [],
         'roles': ['LG', 'LG', 'Vil', 'Vil', 'Voy', 'Vol', 'Sor'],
@@ -37,10 +37,8 @@ describe('middleware', () => {
               payload: {
                 state: {
                   host: { 'id': 1, 'name': 'mario' },
-                  id: 'game.id', name: 'table 6',
-                  phase: "join game",
-                  players: [],
-                  roles: ['LG', 'LG', 'Vil', 'Vil', 'Voy', 'Vol', 'Sor'],
+                  id: 'game.id', name: 'table 6', phase: "join game",
+                  players: [], roles: ['LG', 'LG', 'Vil', 'Vil', 'Voy', 'Vol', 'Sor'],
                 },
               },
             },
@@ -49,7 +47,8 @@ describe('middleware', () => {
             {
               event: 'start phase: join game',
               payload: {
-                id: 'game.id', name: 'table 6', host: { id: 1, name: 'mario' },
+                host: { id: 1, name: 'mario' },
+                id: 'game.id', name: 'table 6', phase: "join game",
                 players: [],
                 roles: ['LG', 'LG', 'Vil', 'Vil', 'Voy', 'Vol', 'Sor'],
               },

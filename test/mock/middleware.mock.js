@@ -18,7 +18,7 @@ module.exports = playerCount => {
     mocks,
     globalState: middleware.store.state,
     gameState: () => middleware.store.state.games[0] && middleware.store.state.games[0].store.state,
-    clearOutput: () => {
+    startRecordOutput: () => {
       for (let i = 0; i < mocks.length; i++) {
         mocks[i].broadcasts.length = 0
         mocks[i].emits.length = 0

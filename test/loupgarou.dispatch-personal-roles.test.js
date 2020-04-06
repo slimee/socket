@@ -3,7 +3,7 @@ const makeMiddlewareMock = require('./mock/middleware.mock')
 describe('middleware', () => {
   describe('loup garou', () => {
     test('player ready', async () => {
-      const { player1, player2, player3, clearOutput } = makeMiddlewareMock(3)
+      const { player1, player2, player3, startRecordOutput } = makeMiddlewareMock(3)
 
       await player1.send['login']({ id: 1, name: 'player1' })
       await player2.send['login']({ id: 2, name: 'player2' })
@@ -15,7 +15,7 @@ describe('middleware', () => {
       await player1.send['player ready']()
       await player2.send['player ready']()
       await player3.send['player ready']()
-      clearOutput()
+      startRecordOutput()
 
       expect(player1.output).toEqual({
         'broadcasts': [],

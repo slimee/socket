@@ -3,13 +3,13 @@ const makeMiddlewareMock = require('./mock/middleware.mock')
 describe('middleware', () => {
   describe('loup garou', () => {
     test('join game 1 player', async () => {
-      const { player1: mario, player2: luigi, clearOutput } = makeMiddlewareMock(2)
+      const { player1: mario, player2: luigi, startRecordOutput } = makeMiddlewareMock(2)
 
       await mario.send['login']({ id: 1, name: 'mario' })
       await luigi.send['login']({ id: 2, name: 'luigi' })
       await mario.send['create game']({ id: 'mario.game.id' })
 
-      clearOutput()
+      startRecordOutput()
 
       await mario.send['join game']('mario.game.id')
 
@@ -26,13 +26,13 @@ describe('middleware', () => {
       })
     })
     test('join game 2 players', async () => {
-      const { player1: mario, player2: luigi, clearOutput } = makeMiddlewareMock(2)
+      const { player1: mario, player2: luigi, startRecordOutput } = makeMiddlewareMock(2)
 
       await mario.send['login']({ id: 1, name: 'mario' })
       await luigi.send['login']({ id: 2, name: 'luigi' })
       await mario.send['create game']({ id: 'mario.game.id' })
 
-      clearOutput()
+      startRecordOutput()
 
       await mario.send['join game']('mario.game.id')
       await luigi.send['join game']('mario.game.id')
@@ -60,14 +60,14 @@ describe('middleware', () => {
       })
     })
     test('join game 2nd player', async () => {
-      const { player1: mario, player2: luigi, clearOutput } = makeMiddlewareMock(2)
+      const { player1: mario, player2: luigi, startRecordOutput } = makeMiddlewareMock(2)
 
       await mario.send['login']({ id: 1, name: 'mario' })
       await luigi.send['login']({ id: 2, name: 'luigi' })
       await mario.send['create game']({ id: 'mario.game.id' }, { roles: ['LG', 'Vil'] })
 
       await mario.send['join game']('mario.game.id')
-      clearOutput()
+      startRecordOutput()
       await luigi.send['join game']('mario.game.id')
 
       expect(mario.output).toEqual({

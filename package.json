@@ -1,7 +1,7 @@
 {
-  "name": "socket.io-chat",
+  "name": "multiplayer-games",
   "version": "0.0.0",
-  "description": "A simple chat client using socket.io",
+  "description": "A multiplayer games server",
   "main": "index.js",
   "author": "Grant Timmerman",
   "private": true,
@@ -19,5 +19,9 @@
   },
   "engines": {
     "node": "13.9.0"
+  },
+  "jest": {
+    "verbose": true,
+    "transform": {}
   }
 }

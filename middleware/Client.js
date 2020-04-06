@@ -1,7 +1,9 @@
+const uuid = require('../services/uuid')
+
 module.exports = class Client {
   constructor(socket) {
+    this.id = uuid()
     this.socket = socket
-    this.setUser(null)
   }
 
   setUser(user) {
