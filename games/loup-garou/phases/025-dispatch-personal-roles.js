@@ -5,11 +5,16 @@ module.exports = class PlayerReady {
     this.name = 'dispatch personal roles'
   }
 
-  async start(){
-    //get players
-    //get clients
-    //emit the role of each
-    //this.next()
+  async start() {
+    const players = this.store.getPlayers()
+    !process.env.NO_ROLE_SHUFFLE && this.store.shuffleRoles()
+    await Promise.all(players.map(player => {
+      this.store.live(player)
+      const client = this.store.getPlayerClient(player)
+      const role = this.store.getPlayerRole(player)
+      return client.emit('player role', role)
+    }))
+    await this.next()
   }
 
 }

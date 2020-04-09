@@ -1,4 +1,4 @@
-const makeMiddlewareMock = require('./mock/middleware.mock')
+const {makeMiddlewareMock} = require('./mock/middleware.mock')
 
 describe('middleware', () => {
   test('login 1 player', () => {

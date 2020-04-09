@@ -22,12 +22,12 @@ module.exports = class GlobalStore {
     }))
   }
 
-  addClient(client){
+  addClient(client) {
     this.state.clients.push(client)
     this.addUser(client.getUser())
   }
 
-  removeClient(client){
+  removeClient(client) {
     const index = this.state.clients.findIndex(stateClient => stateClient.id === client.id)
     if (index >= 0) this.state.clients.splice(index, 1)
     return this.removeUser(client.getUser())
@@ -63,7 +63,7 @@ module.exports = class GlobalStore {
   }
 
   getGame(id) {
-      return this.state.games.find((game) => game.getId() === id)
+    return this.state.games.find((game) => game.getId() === id)
   }
 
   static isUser({ id, name }) {
@@ -72,5 +72,9 @@ module.exports = class GlobalStore {
 
   static isGame({ id }) {
     return id
+  }
+
+  getPlayerClient(player) {
+    return this.state.clients.find(client => client.getUser().id === player.id)
   }
 }

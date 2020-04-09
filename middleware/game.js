@@ -4,10 +4,10 @@ module.exports = (client, globalStore) => {
 
   client.when('create game', async ({ id, name }, config = {}) => {
     if (!client.getUser()) return
-    const game = new LoupGarou(client, { id, name, host: client.getUser() }, config)
+    const game = new LoupGarou(client, { id, name, host: client.getUser(), globalStore }, config)
     globalStore.addGame(game)
     await game.next()
-    await client.broadcast('game created', game.getStore())
+    await client.broadcast('game created', { state: game.getState() })
   })
 
   client.when('list games', () => ({ games: globalStore.getGamesList() }))

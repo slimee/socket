@@ -1,4 +1,4 @@
-const makeMiddlewareMock = require('./mock/middleware.mock')
+const {makeMiddlewareMock} = require('./mock/middleware.mock')
 
 describe('middleware', () => {
   describe('loup garou', () => {
@@ -77,16 +77,6 @@ describe('middleware', () => {
         'emitsTo': [
           {
             'event': 'start phase: player ready',
-            'payload': {
-              'host': { 'id': 1, 'name': 'mario' },
-              'id': 'mario.game.id', 'name': 'mario.game.id',
-              'phase': 'player ready',
-              'players': [
-                { 'id': 1, 'name': 'mario' },
-                { 'id': 2, 'name': 'luigi' },
-              ],
-              'roles': ['LG', 'Vil'],
-            },
             'to': 'mario.game.id',
           },
         ],

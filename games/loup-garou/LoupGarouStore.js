@@ -1,11 +1,16 @@
+const shuffle = require('../../util/shuffle')
 const { isBad, isGood } = require('./roles')
 const GameStore = require('../GameStore')
 
 module.exports = class LoupGarouStore extends GameStore {
-  constructor(idNameHost, roles) {
-    super(idNameHost)
-    this.state.roles = Object.freeze(roles)
+  constructor(superConfig, roles) {
+    super(superConfig)
+    this.state.roles = roles
     this.state.phase = 'created'
+  }
+
+  shuffleRoles() {
+    this.state.roles = shuffle(this.state.roles)
   }
 
   setPhase(value) {
@@ -29,9 +34,12 @@ module.exports = class LoupGarouStore extends GameStore {
     return this.state.players.filter(player => this.getPlayerRole(player) === role)
   }
 
+  countByRole(role) {
+    return this.getPlayersByRole(role).length
+  }
+
   isPlayerRole(player, role) {
-    return this.isInPlayers(player)
-      && this.getPlayer(player).role === role
+    return this.getPlayerRole(player) === role
   }
 
   isAlive(player) {
@@ -45,6 +53,10 @@ module.exports = class LoupGarouStore extends GameStore {
 
   kill(player) {
     this.getPlayer(player).alive = false
+  }
+
+  live(player) {
+    this.getPlayer(player).alive = true
   }
 
   aTeamIsDead() {

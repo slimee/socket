@@ -1,4 +1,3 @@
-const uuid = require('../../services/uuid')
 const CheckEndGame = require('../loup-garou/phases/000-check-end-game')
 const PlayerJoin = require('../loup-garou/phases/010-player-join')
 const PlayerReady = require('../loup-garou/phases/020-player-ready')
@@ -9,11 +8,11 @@ const LoupGarouStore = require('./LoupGarouStore')
 module.exports = class LoupGarou {
   constructor(
     hostClient,
-    { id = uuid(), name, host },
+    gameStoreConfig,
     { roles = ['LG', 'LG', 'Vil', 'Vil', 'Voy', 'Vol', 'Sor'] },
   ) {
     this.hostClient = hostClient
-    this.store = new LoupGarouStore({ id, name, host }, roles)
+    this.store = new LoupGarouStore(gameStoreConfig, roles)
     this.playerJoin = this.makePhase(PlayerJoin)
     this.phases = [
       this.playerJoin,
@@ -29,7 +28,7 @@ module.exports = class LoupGarou {
   makePhase(phaseClass, ...params) {
     return new phaseClass({
       store: this.store,
-      broadcast: () => this.hostClient.broadcast,
+      broadcast: (...args) => this.hostClient.broadcast(...args),
       next: () => this.next(),
     }, ...params)
   }
@@ -52,16 +51,16 @@ module.exports = class LoupGarou {
       console.log(`run(${event}, ${client.getUser().name}) but no phase.`)
       return
     }
-    if (event === this.phase.name) return this.phase.run(client, ...params)
     if (this.phase.events && this.phase.events.includes(event)) return this.phase[event](client, ...params)
+    if (event === this.phase.name) return this.phase.run(client, ...params)
     console.log(`run ${event} !== ${this.phase.name} by ${client && client.getUser() && client.getUser().name}`)
   }
 
   async next() {
     this.phaseIndex++
     this.phase = this.phases[this.phaseIndex]
-    await this.hostClient.emitTo(this.getId(), `start phase: ${this.phase.name}`, this.store.state)
     this.store.setPhase(this.phase.name)
+    await this.hostClient.emitTo(this.getId(), `start phase: ${this.phase.name}`)
     this.phase.start && await this.phase.start()
   }
 
@@ -77,7 +76,7 @@ module.exports = class LoupGarou {
     return this.store.getHost()
   }
 
-  getStore() {
-    return this.store
+  getState() {
+    return this.store.state
   }
 }

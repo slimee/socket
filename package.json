@@ -7,9 +7,10 @@
   "private": true,
   "license": "BSD",
   "dependencies": {
+    "chai": "^4.2.0",
     "express": "4.17.1",
     "global": "^4.4.0",
-    "jest": "^25.2.3",
+    "jest": "25.2.7",
     "socket.io": "^2.3.0"
   },
   "scripts": {

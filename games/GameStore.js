@@ -1,8 +1,9 @@
 const uuid = require('../services/uuid')
 
 module.exports = class GameStore {
-  constructor({ id = uuid(), name, host }) {
+  constructor({ id = uuid(), name, host, globalStore }) {
     this.initState({ id, name: name || id, host })
+    this.globalStore = globalStore
   }
 
   initState(initial) {
@@ -38,12 +39,20 @@ module.exports = class GameStore {
     return player
   }
 
+  getPlayers() {
+    return this.state.players
+  }
+
   getPlayer(player) {
     return this.state.players.find(({ id }) => player.id === id)
   }
 
-  getPlayerIndex(playerId) {
-    return this.state.players.findIndex(({ id }) => playerId === id)
+  getPlayerClient(player) {
+    return this.globalStore.getPlayerClient(player)
+  }
+
+  getPlayerIndex(player) {
+    return this.state.players.findIndex(({ id }) => player.id === id)
   }
 
   getPlayersCount() {

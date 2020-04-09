@@ -14,6 +14,6 @@ module.exports = class PlayerReady {
     this.readyPlayers.push(player)
     await client.emitTo(this.store.getId(), 'player ready', player)
 
-    if (this.readyPlayers.length === this.store.getPlayersCount()) this.next()
+    if (this.readyPlayers.length === this.store.getPlayersCount()) await this.next()
   }
 }

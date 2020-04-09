@@ -1,4 +1,4 @@
-const makeMiddlewareMock = require('./mock/middleware.mock')
+const { makeMiddlewareMock } = require('./mock/middleware.mock')
 
 describe('middleware', () => {
   describe('chat', () => {
@@ -9,7 +9,7 @@ describe('middleware', () => {
       hostPlayer.send['new message']('Hello, World!')
       hostPlayer.send['stop typing']()
 
-      expect(globalState).toEqual({ clients:[], 'users': [], 'games': [] })
+      expect(globalState).toEqual({ clients: [], 'users': [], 'games': [] })
       expect(hostPlayer.broadcasts).toEqual([])
     })
 
@@ -23,7 +23,7 @@ describe('middleware', () => {
 
       expect(globalState.users).toEqual([{ 'id': 1, 'name': 'mario' }])
       expect(hostPlayer.output).toEqual({
-        emits:[], emitsTo: [], joins: [],
+        emits: [], emitsTo: [], joins: [],
         broadcasts: [
           { 'event': 'user login', 'payload': { 'id': 1, 'name': 'mario' } },
           { 'event': 'typing', 'payload': { 'id': 1, 'name': 'mario' } },

@@ -1,4 +1,4 @@
-const makeMiddlewareMock = require('./mock/middleware.mock')
+const {makeMiddlewareMock} = require('./mock/middleware.mock')
 
 describe('middleware', () => {
   describe('game', () => {
@@ -46,12 +46,6 @@ describe('middleware', () => {
           emitsTo: [
             {
               event: 'start phase: join game',
-              payload: {
-                host: { id: 1, name: 'mario' },
-                id: 'game.id', name: 'table 6', phase: "join game",
-                players: [],
-                roles: ['LG', 'LG', 'Vil', 'Vil', 'Voy', 'Vol', 'Sor'],
-              },
               to: 'game.id',
             },
           ],

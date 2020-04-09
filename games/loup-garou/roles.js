@@ -5,11 +5,11 @@ const Voleur = 'Voleur'
 const Sorciere = 'Sorcière'
 
 const Roles = Object.freeze({
-  LoupGarou,
-  Villageois,
-  Voyante,
-  Voleur,
-  Sorciere,
+  LoupGarou: 'LG',
+  Villageois: 'Vil',
+  Voyante: 'Voy',
+  Voleur: 'Vol',
+  Sorciere: 'Sor',
 })
 
 const Teams = Object.freeze({
