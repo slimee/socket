@@ -17,14 +17,15 @@ describe('middleware', () => {
 
       expect(hostPlayer.output).toEqual(
         {
-          broadcasts: [
+          emitsTo: [
             {
-              'event': 'witch save',
+              "to": "player1.game.id",
+              'event': 'witch saved',
               'payload': { 'alive': true, 'id': 3, 'name': 'player3' },
             },
           ],
           'emits': [],
-          'emitsTo': [],
+          'broadcasts': [],
           'joins': [],
         },
       )
@@ -46,14 +47,61 @@ describe('middleware', () => {
 
       expect(hostPlayer.output).toEqual(
         {
-          broadcasts: [
+          emitsTo: [
             {
+              "to": "player1.game.id",
               'event': 'wolf kill',
               'payload': { 'alive': false, 'id': 3, 'name': 'player3' },
             },
           ],
           'emits': [],
-          'emitsTo': [],
+          'broadcasts': [],
+          'joins': [],
+        },
+      )
+    })
+
+    test('wolf kill until end game', async () => {
+      const roles = ['LG', 'Vil']
+      const {
+        startRecordOutput,
+        hostPlayer, player1: wolf, player2DTO: villageoisDTO,
+      } = await simpleStart(roles)
+
+      startRecordOutput()
+
+      await wolf.send['wolf kill'](villageoisDTO)
+
+      expect(hostPlayer.output).toEqual(
+        {
+          emitsTo: [
+            {
+              "to": "player1.game.id",
+              'event': 'wolf kill',
+              'payload': { 'alive': false, 'id': 2, 'name': 'player2' },
+            },
+            {
+              "to": "player1.game.id",
+              "event": "end game",
+              "payload": {
+                "host": {
+                  "alive": true,
+                  "id": 1,
+                  "name": "player1"
+                },
+                "id": "player1.game.id",
+                "name": "player1.game.id",
+                "phase": "end game",
+                "players": [
+                  { 'alive': true, 'id': 1, 'name': 'player1' },
+                  { 'alive': false, 'id': 2, 'name': 'player2' },
+                ],
+                "roles": ["LG", "Vil"]
+              },
+            }
+          ],
+          'emits': [],
+          'broadcasts': [],
           'joins': [],
         },
       )

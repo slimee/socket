@@ -1,9 +1,3 @@
-const LoupGarou = 'LoupGarou'
-const Villageois = 'Villageois'
-const Voyante = 'Voyante'
-const Voleur = 'Voleur'
-const Sorciere = 'Sorcière'
-
 const Roles = Object.freeze({
   LoupGarou: 'LG',
   Villageois: 'Vil',
@@ -13,8 +7,8 @@ const Roles = Object.freeze({
 })
 
 const Teams = Object.freeze({
-  Good: [Villageois, Voyante, Voleur, Sorciere],
-  Bad: [LoupGarou],
+  Good: [Roles.Villageois, Roles.Voyante, Roles.Voleur, Roles.Sorciere],
+  Bad: [Roles.LoupGarou],
 })
 
 module.exports = {

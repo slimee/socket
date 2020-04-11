@@ -1,13 +1,16 @@
 const { Roles } = require('../roles')
 
 module.exports = class WolfKill {
-  constructor({ store, next, broadcast }) {
+  constructor({ store, next, sayToRoom }) {
     this.store = store
     this.next = next
-    this.broadcast = broadcast
+    this.sayToRoom = sayToRoom
     this.name = 'wolf kill'
     this.events = ['wolf kill', 'witch save']
     this.toSave = null
+  }
+
+  start() {
     this.wolfesVotes = {}
   }
 
@@ -36,7 +39,11 @@ module.exports = class WolfKill {
   }
 
   wolfesVoted() {
-    return this.store.countByRole(Roles.LoupGarou) === Object.keys(this.wolfesVotes).length
+    return this.store.countAlivesByRole(Roles.LoupGarou) === this.wolfesVotesCount()
+  }
+
+  wolfesVotesCount() {
+    return Object.keys(this.wolfesVotes).length
   }
 
   getVictim() {
@@ -47,20 +54,20 @@ module.exports = class WolfKill {
 
   async checkEnd() {
     if (this.witchVoted() && this.wolfesVoted()) {
-      if (this.getVictim().id === this.toSave.id) await this.save()
+      if (this.getVictim().id === (this.toSave && this.toSave.id)) await this.save()
       else await this.kill()
-      //await this.next()
+      await this.next()
     }
     return 'wait votes'
   }
 
   async save() {
-    await this.broadcast('witch saved', this.toSave)
+    await this.sayToRoom('witch saved', this.toSave)
   }
 
   async kill() {
     const victim = this.getVictim()
     this.store.kill(victim)
-    await this.broadcast('wolf kill', victim)
+    await this.sayToRoom('wolf kill', victim)
   }
 }

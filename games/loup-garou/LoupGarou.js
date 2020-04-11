@@ -1,8 +1,10 @@
-const CheckEndGame = require('../loup-garou/phases/000-check-end-game')
 const PlayerJoin = require('../loup-garou/phases/010-player-join')
 const PlayerReady = require('../loup-garou/phases/020-player-ready')
 const DispatchPersonalRoles = require('../loup-garou/phases/025-dispatch-personal-roles')
-const WolfKill = require('../loup-garou/phases/030-wolf-kill')
+const WolfKillWitchSave = require('../loup-garou/phases/030-wolf-kill')
+const VoyanteVoit = require('../loup-garou/phases/040-voyante-voit')
+const VoleurVole = require('../loup-garou/phases/050-voleur-vole')
+const VillageoisTuent = require('../loup-garou/phases/060-villageois-tuent')
 const LoupGarouStore = require('./LoupGarouStore')
 
 module.exports = class LoupGarou {
@@ -18,9 +20,12 @@ module.exports = class LoupGarou {
       this.playerJoin,
       this.makePhase(PlayerReady),
       this.makePhase(DispatchPersonalRoles),
-      this.makePhase(WolfKill),
-      this.makePhase(CheckEndGame),
+      this.makePhase(WolfKillWitchSave),
+      this.makePhase(VoyanteVoit),
+      this.makePhase(VoleurVole),
+      this.makePhase(VillageoisTuent),
     ]
+    this.wolfKillPhaseIndex = 3
     this.phaseIndex = -1
     this.phase = null
   }
@@ -28,7 +33,7 @@ module.exports = class LoupGarou {
   makePhase(phaseClass, ...params) {
     return new phaseClass({
       store: this.store,
-      broadcast: (...args) => this.hostClient.broadcast(...args),
+      sayToRoom: (...args) => this.hostClient.emitTo(this.getId(), ...args),
       next: () => this.next(),
     }, ...params)
   }
@@ -57,11 +62,26 @@ module.exports = class LoupGarou {
   }
 
   async next() {
-    this.phaseIndex++
+    if (this.store.aTeamIsDead()) await this.endGame()
+    else await this.goToPhase(this.phaseIndex + 1)
+  }
+
+  async endGame() {
+    await this.hostClient.emitTo(this.getId(), 'end game', this.store.getEndGamePayload())
+    await this.goToPhase(1)
+  }
+
+  async goToPhase(index) {
+    this.phaseIndex = index
+    if (this.phaseIndex >= this.phases.length) await this.goToWolfKillPhase()
     this.phase = this.phases[this.phaseIndex]
     this.store.setPhase(this.phase.name)
     await this.hostClient.emitTo(this.getId(), `start phase: ${this.phase.name}`)
     this.phase.start && await this.phase.start()
+  }
+
+  goToWolfKillPhase() {
+    return this.goToPhase(this.wolfKillPhaseIndex)
   }
 
   getId() {
@@ -70,10 +90,6 @@ module.exports = class LoupGarou {
 
   getName() {
     return this.store.getName()
-  }
-
-  getHost() {
-    return this.store.getHost()
   }
 
   getState() {

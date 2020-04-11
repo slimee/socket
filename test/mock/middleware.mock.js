@@ -44,22 +44,22 @@ module.exports = {
     const player2DTO = { id: 2, name: 'player2' }
     const player3DTO = { id: 3, name: 'player3' }
     const player4DTO = { id: 4, name: 'player4' }
-    await player1.send['login'](player1DTO)
-    await player2.send['login'](player2DTO)
-    await player3.send['login'](player3DTO)
-    await player4.send['login'](player4DTO)
+    if(roles.length > 0) await player1.send['login'](player1DTO)
+    if(roles.length > 1) await player2.send['login'](player2DTO)
+    if(roles.length > 2) await player3.send['login'](player3DTO)
+    if(roles.length > 3) await player4.send['login'](player4DTO)
 
     await player1.send['create game']({ id: 'player1.game.id' }, { roles })
 
-    await player1.send['join game']('player1.game.id')
-    await player2.send['join game']('player1.game.id')
-    await player3.send['join game']('player1.game.id')
-    await player4.send['join game']('player1.game.id')
+    if(roles.length > 0) await player1.send['join game']('player1.game.id')
+    if(roles.length > 1) await player2.send['join game']('player1.game.id')
+    if(roles.length > 2) await player3.send['join game']('player1.game.id')
+    if(roles.length > 3) await player4.send['join game']('player1.game.id')
 
-    await player1.send['player ready']()
-    await player2.send['player ready']()
-    await player3.send['player ready']()
-    await player4.send['player ready']()
+    if(roles.length > 0) await player1.send['player ready']()
+    if(roles.length > 1) await player2.send['player ready']()
+    if(roles.length > 2) await player3.send['player ready']()
+    if(roles.length > 3) await player4.send['player ready']()
 
     !roleShuffle && (process.env.NO_ROLE_SHUFFLE = false)
 
