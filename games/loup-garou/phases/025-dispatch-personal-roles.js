@@ -10,11 +10,15 @@ module.exports = class PlayerReady {
     !process.env.NO_ROLE_SHUFFLE && this.store.shuffleRoles()
     await Promise.all(players.map(player => {
       this.store.live(player)
-      const client = this.store.getPlayerClient(player)
-      const role = this.store.getPlayerRole(player)
-      return client.emit('player role', role)
+      this.informRole(player)
     }))
     await this.next()
+  }
+
+  informRole(player) {
+    const client = this.store.getPlayerClient(player)
+    const role = this.store.getPlayerRole(player)
+    return client.emit('player role', role)
   }
 
 }

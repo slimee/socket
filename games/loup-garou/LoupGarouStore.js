@@ -40,7 +40,7 @@ module.exports = class LoupGarouStore extends GameStore {
   }
 
   getAlivesByRole(role) {
-    return this.getPlayersByRole(role).filter(this.isAlive)
+    return this.getPlayersByRole(role).filter((p) => this.isAlive(p))
   }
 
   countAlivesByRole(role) {
@@ -52,8 +52,7 @@ module.exports = class LoupGarouStore extends GameStore {
   }
 
   isAlive(player) {
-    return this.isInPlayers(player)
-      && this.getPlayer(player).alive
+    return this.isInPlayers(player) && this.getPlayer(player).alive
   }
 
   countAlives() {

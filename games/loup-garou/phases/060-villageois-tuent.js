@@ -21,8 +21,11 @@ module.exports = class WolfKill {
     await this.checkEnd()
   }
 
-  checkEnd() {
-    if (this.villageoisVoted() && this.phaseChrono--) setTimeout(this.end, 30000)
+  async checkEnd() {
+    if (this.villageoisVoted() && this.phaseChrono--) {
+      await this.sayToRoom('villageois voted')
+      setTimeout(this.end, 30000)
+    }
   }
 
   async end() {
