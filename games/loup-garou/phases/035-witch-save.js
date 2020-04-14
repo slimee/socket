@@ -4,7 +4,7 @@ module.exports = class WitchSave {
   constructor({ store, next, sayToRole }) {
     this.store = store
     this.next = next
-    this.sayVictimToWitches = () => this.sayToRole(Roles.Sorciere, 'wolf victim', this.store.getWolfVictim())
+    this.sayVictimToWitches = () => sayToRole(Roles.Sorciere, 'wolf victim', this.store.getWolfVictim())
     this.name = 'witch save'
     this.witchVotes = {}
   }

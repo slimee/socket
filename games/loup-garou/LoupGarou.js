@@ -33,9 +33,18 @@ module.exports = class LoupGarou {
   makePhase(phaseClass, ...params) {
     return new phaseClass({
       store: this.store,
-      sayToRoom: (...args) => this.hostClient.emitTo(this.getId(), ...args),
+      sayToRoom: (...payload) => this.hostClient.emitTo(this.getId(), ...payload),
+      sayToRole: (role, event, ...payload) => this.sayToRole(role, event, ...payload),
       next: () => this.next(),
     }, ...params)
+  }
+
+  sayToRole(role, event, ...payload) {
+    const players = this.store.getAlivesByRole(role)
+    return Promise.all(players.map(player => {
+      const client = this.store.getPlayerClient(player)
+      return client.emit(event, ...payload)
+    }))
   }
 
   addPlayer(client) {

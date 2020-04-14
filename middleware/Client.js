@@ -19,7 +19,7 @@ module.exports = class Client {
   }
 
   emit(event, payload) {
-    return this.socket.to(to).emit(event, payload)
+    return this.socket.emit(event, payload)
   }
 
   broadcast(event, payload) {
