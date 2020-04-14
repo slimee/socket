@@ -62,12 +62,13 @@ module.exports = class LoupGarou {
   }
 
   async next() {
-    if (this.store.aTeamIsDead()) await this.endGame()
+    if (this.store.isPlaying() && this.store.aTeamIsDead()) await this.endGame()
     else await this.goToPhase(this.phaseIndex + 1)
   }
 
   async endGame() {
     await this.hostClient.emitTo(this.getId(), 'end game', this.store.getEndGamePayload())
+    this.store.setPlaying(false)
     await this.goToPhase(1)
   }
 

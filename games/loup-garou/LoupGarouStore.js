@@ -56,15 +56,11 @@ module.exports = class LoupGarouStore extends GameStore {
   }
 
   countAlives() {
-    return this.getPlayers().map(this.isAlive)
+    return this.getPlayers().filter((p) => this.isAlive(p)).length
   }
 
   isKillable(player) {
     return this.isAlive(player)
-  }
-
-  kill(player) {
-    this.getPlayer(player).alive = false
   }
 
   live(player) {
@@ -72,6 +68,7 @@ module.exports = class LoupGarouStore extends GameStore {
   }
 
   aTeamIsDead() {
+    if (this.getPlayers().length === 0) return false
     const goodPlayersAlive = this.getPlayers().filter(player => this.isAlive(player) && isGood(this.getPlayerRole(player)))
     const badPlayersAlive = this.getPlayers().filter(player => this.isAlive(player) && isBad(this.getPlayerRole(player)))
     return goodPlayersAlive.length === 0 || badPlayersAlive.length === 0
@@ -96,5 +93,30 @@ module.exports = class LoupGarouStore extends GameStore {
     const player2Role = this.getPlayerRole(player2)
     this.setPlayerRole(player1, player2Role)
     this.setPlayerRole(player2, player1Role)
+  }
+
+  setWolfVictim(victim) {
+    this.state.wolfWitchPhase = { victim }
+  }
+
+  clearWolfVictim() {
+    this.state.wolfWitchPhase = null
+  }
+
+  getWolfVictim() {
+    return this.state.wolfWitchPhase.victim
+  }
+
+  witchSaveVictim(isSaved) {
+    this.state.wolfWitchPhase = { ...this.state.wolfWitchPhase, isSaved }
+  }
+
+  killWolfVictim() {
+    this.getPlayer(this.getWolfVictim()).alive = false
+    this.clearWolfVictim()
+  }
+
+  saveWolfVictim() {
+    this.clearWolfVictim()
   }
 }

@@ -19,9 +19,13 @@ describe('middleware', () => {
         {
           emitsTo: [
             {
-              "to": "player1.game.id",
+              'to': 'player1.game.id',
               'event': 'witch saved',
               'payload': { 'alive': true, 'id': 3, 'name': 'player3' },
+            },
+            {
+              'to': 'player1.game.id',
+              'event': 'start phase: voyante voit',
             },
           ],
           'emits': [],
@@ -49,9 +53,13 @@ describe('middleware', () => {
         {
           emitsTo: [
             {
-              "to": "player1.game.id",
+              'to': 'player1.game.id',
               'event': 'wolf kill',
               'payload': { 'alive': false, 'id': 3, 'name': 'player3' },
+            },
+            {
+              'to': 'player1.game.id',
+              'event': 'start phase: voyante voit',
             },
           ],
           'emits': [],
@@ -76,29 +84,34 @@ describe('middleware', () => {
         {
           emitsTo: [
             {
-              "to": "player1.game.id",
+              'to': 'player1.game.id',
               'event': 'wolf kill',
               'payload': { 'alive': false, 'id': 2, 'name': 'player2' },
             },
             {
-              "to": "player1.game.id",
-              "event": "end game",
-              "payload": {
-                "host": {
-                  "alive": true,
-                  "id": 1,
-                  "name": "player1"
+              'to': 'player1.game.id',
+              'event': 'end game',
+              'payload': {
+                'host': {
+                  'alive': true,
+                  'id': 1,
+                  'name': 'player1',
                 },
-                "id": "player1.game.id",
-                "name": "player1.game.id",
-                "phase": "end game",
-                "players": [
+                'id': 'player1.game.id',
+                'name': 'player1.game.id',
+                'phase': 'player ready',
+                'playing': false,
+                'roles': ['LG', 'Vil'],
+                'players': [
                   { 'alive': true, 'id': 1, 'name': 'player1' },
                   { 'alive': false, 'id': 2, 'name': 'player2' },
                 ],
-                "roles": ["LG", "Vil"]
               },
-            }
+            },
+            {
+              'to': 'player1.game.id',
+              'event': 'start phase: player ready',
+            },
           ],
           'emits': [],
           'broadcasts': [],

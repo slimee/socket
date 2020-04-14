@@ -13,6 +13,7 @@ module.exports = class PlayerReady {
       this.informRole(player)
     }))
     await this.next()
+    this.store.setPlaying(true)
   }
 
   informRole(player) {

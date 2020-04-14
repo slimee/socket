@@ -39,6 +39,14 @@ module.exports = class GameStore {
     return player
   }
 
+  setPlaying(playing) {
+    this.state.playing = playing
+  }
+
+  isPlaying() {
+    return this.state.playing
+  }
+
   getPlayers() {
     return this.state.players
   }

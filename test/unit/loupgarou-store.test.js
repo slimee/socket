@@ -110,4 +110,23 @@ describe('loupgarou store', () => {
     expect(store.getPlayerRole({ id: 4 })).toEqual(Roles.Voyante)
     expect(store.getPlayerRole({ id: 2 })).toEqual(Roles.Voleur)
   })
+  it('countAlives', () => {
+    const store = getStore(
+      [
+        { id: 1, alive: true },
+        { id: 2, alive: false },
+        { id: 3, alive: true },
+        { id: 4, alive: true },
+        { id: 5, alive: false },
+      ],
+      [
+        Roles.LoupGarou,
+        Roles.Voyante,
+        Roles.Villageois,
+        Roles.Voleur,
+        Roles.Voyante,
+      ],
+    )
+    expect(store.countAlives()).toEqual(3)
+  })
 })

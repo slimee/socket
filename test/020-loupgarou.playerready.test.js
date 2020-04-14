@@ -82,6 +82,7 @@ describe('middleware', () => {
           { 'id': 1, 'name': 'mario', alive: true },
           { 'id': 2, 'name': 'luigi', alive: true },
         ],
+        'playing': true,
         'roles': ['LG', 'LG'],
       })
       expect(mario.output).toEqual({
