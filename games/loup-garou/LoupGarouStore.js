@@ -39,6 +39,14 @@ module.exports = class LoupGarouStore extends GameStore {
     return this.getPlayers().filter(player => this.getPlayerRole(player) === role)
   }
 
+  hasRoleFilter(role, player) {
+    return this.getPlayerRole(player) === role
+  }
+
+  isAliveFilter(player){
+    return this.isAlive(player)
+  }
+
   getAlivesByRole(role) {
     return this.getPlayersByRole(role).filter((p) => this.isAlive(p))
   }

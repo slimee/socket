@@ -2,6 +2,38 @@ const { simpleStart } = require('./mock/middleware.mock')
 
 describe('middleware', () => {
   describe('loup garou', () => {
+    test('witch save', async () => {
+      const roles = ['LG', 'LG', 'Vil', 'Sor']
+      const {
+        startRecordOutput,
+        hostPlayer, player1: wolf1, player2: wolf2, player4: witch, player3DTO: villageoisDTO,
+      } = await simpleStart(roles)
+
+      startRecordOutput()
+
+      await wolf1.send['wolf kill'](villageoisDTO)
+      await wolf2.send['wolf kill'](villageoisDTO)
+      await witch.send['witch save'](villageoisDTO)
+
+      expect(hostPlayer.output).toEqual(
+        {
+          emitsTo: [
+            {
+              'to': 'player1.game.id',
+              'event': 'witch saved',
+              'payload': { 'alive': true, 'id': 3, 'name': 'player3' },
+            },
+            {
+              'to': 'player1.game.id',
+              'event': 'start phase: voyante voit',
+            },
+          ],
+          'emits': [],
+          'broadcasts': [],
+          'joins': [],
+        },
+      )
+    })
 
     test('wolf kill', async () => {
       const roles = ['LG', 'LG', 'Vil', 'Sor']
@@ -15,6 +47,7 @@ describe('middleware', () => {
 
       await wolf1.send['wolf kill'](villageoisDTO)
       await wolf2.send['wolf kill'](villageoisDTO)
+      await witch.send['witch save'](villageois2DTO)
 
       expect(hostPlayer.output).toEqual(
         {

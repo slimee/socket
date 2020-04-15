@@ -1,7 +1,8 @@
 const PlayerJoin = require('../loup-garou/phases/010-player-join')
 const PlayerReady = require('../loup-garou/phases/020-player-ready')
 const DispatchPersonalRoles = require('../loup-garou/phases/025-dispatch-personal-roles')
-const WolfKillWitchSave = require('../loup-garou/phases/030-wolf-kill')
+const WolfKill = require('../loup-garou/phases/030-wolf-kill')
+const WitchSave = require('../loup-garou/phases/035-witch-save')
 const VoyanteVoit = require('../loup-garou/phases/040-voyante-voit')
 const VoleurVole = require('../loup-garou/phases/050-voleur-vole')
 const VillageoisTuent = require('../loup-garou/phases/060-villageois-tuent')
@@ -20,7 +21,8 @@ module.exports = class LoupGarou {
       this.playerJoin,
       this.makePhase(PlayerReady),
       this.makePhase(DispatchPersonalRoles),
-      this.makePhase(WolfKillWitchSave),
+      this.makePhase(WolfKill),
+      this.makePhase(WitchSave),
       this.makePhase(VoyanteVoit),
       this.makePhase(VoleurVole),
       this.makePhase(VillageoisTuent),
@@ -40,7 +42,14 @@ module.exports = class LoupGarou {
   }
 
   sayToRole(role, event, ...payload) {
-    const players = this.store.getAlivesByRole(role)
+    const aliveAndRole = (player) =>
+      this.store.hasRoleFilter(role, player)
+      && this.store.isAlive(player)
+    return this.sayTo(aliveAndRole, event, ...payload)
+  }
+
+  sayTo(filter, event, ...payload) {
+    const players = this.store.getPlayers().filter(filter)
     return Promise.all(players.map(player => {
       const client = this.store.getPlayerClient(player)
       return client.emit(event, ...payload)
