@@ -1,21 +1,22 @@
 const GlobalState = require('../GlobalStore')
 
 module.exports = class Login {
-  constructor(store){
+  constructor(store) {
     this.store = store
   }
-  listenLoginDisconnect(client) {
-    client.when('login', user => {
-      if (!GlobalState.isUser(user)) return
-      if (this.store.getUser(user)) return
+
+  async listenLoginDisconnect(client) {
+
+    await client.when('login', async user => {
+      if (!GlobalState.isUser(user)) return 'not a user'
+      if (this.store.getUser(user)) return 'user already in store'
       client.setUser(user)
       this.store.addClient(client)
-      client.broadcast('user login', user)
-      return { users: this.store.getUsers() }
+      return `Welcome, ${client.getUser().name}!`
     })
+
     client.when('disconnect', () => {
-      if (this.store.removeClient(client))
-        client.broadcast('user logout', client.getUser())
+      this.store.removeClient(client)
     })
   }
 }

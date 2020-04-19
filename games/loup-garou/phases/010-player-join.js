@@ -10,6 +10,7 @@ module.exports = class PlayerJoin {
 
   async run(client) {
     const player = client.getUser()
+    if (!player) return { error: 'no player' }
     if (!PlayerJoin.isPlayer(player)) return { error: 'not a player' }
     if (!this.canAddPlayer()) return { error: 'can\'t add more player' }
 

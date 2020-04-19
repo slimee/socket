@@ -7,16 +7,16 @@ module.exports = (client, globalStore) => {
     const game = new LoupGarou(client, { id, name, host: client.getUser(), globalStore }, config)
     globalStore.addGame(game)
     await game.next()
-    await client.broadcast('game created', { state: game.getState() })
+    return game.getId()
   })
 
   client.when('list games', () => ({ games: globalStore.getGamesList() }))
 
   client.when('join game', async (gameId) => {
     const game = globalStore.getGame(gameId)
-    if (!game) return
+    if (!game) return null
     await game.addPlayer(client)
     await client.join(gameId, client.getUser())
-    return game
+    return game.getState()
   })
 }

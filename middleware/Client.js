@@ -4,6 +4,7 @@ module.exports = class Client {
   constructor(socket) {
     this.id = uuid()
     this.socket = socket
+    this.user = null
   }
 
   setUser(user) {
@@ -15,7 +16,11 @@ module.exports = class Client {
   }
 
   when(event, job) {
-    return this.socket.on(event, async (payload, respond) => respond(await job(payload)))
+    const whenCallback = async (payload, respond) => {
+      const response = await job(payload)
+      respond && respond(response)
+    }
+    return this.socket.on(event, whenCallback)
   }
 
   emit(event, payload) {
@@ -23,7 +28,8 @@ module.exports = class Client {
   }
 
   broadcast(event, payload) {
-    return this.socket.broadcast(event, payload)
+    console.log('broadcast', event, payload)
+    return this.socket.broadcast.emit(event, payload)
   }
 
   emitTo(to, event, payload) {

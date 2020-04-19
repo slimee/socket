@@ -28,6 +28,8 @@ module.exports = class GlobalStore {
   }
 
   removeClient(client) {
+    if (!client) return `removeClient client=${client}`
+    if (!client.id) return `removeClient client.id=${client.id}`
     const index = this.state.clients.findIndex(stateClient => stateClient.id === client.id)
     if (index >= 0) this.state.clients.splice(index, 1)
     return this.removeUser(client.getUser())
@@ -46,9 +48,11 @@ module.exports = class GlobalStore {
   }
 
   removeUser(user) {
-    if (!GlobalStore.isUser(user)) return
+    if (!user) return `removeUser ${user}`
+    if (!GlobalStore.isUser(user)) return `removeUser not a user ${user}`
     const index = this.state.users.findIndex(stateUser => stateUser.id === user.id)
-    if (index >= 0) return this.state.users.splice(index, 1)
+    if (index >= 0) this.state.users.splice(index, 1)
+    else return `removeUser user not found user.id=${user.id}`
   }
 
   removeGame(game) {

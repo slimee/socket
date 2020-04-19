@@ -9,9 +9,9 @@ module.exports = class Middleware {
     this.login = new Login(this.store)
   }
 
-  whenConnect(client) {
-    this.login.listenLoginDisconnect(client)
-    chat(client, this.store)
-    game(client, this.store)
+  async whenConnect(client) {
+    await this.login.listenLoginDisconnect(client)
+    await chat(client, this.store)
+    await game(client, this.store)
   }
 }
