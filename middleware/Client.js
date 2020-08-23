@@ -17,6 +17,7 @@ module.exports = class Client {
 
   when(event, job) {
     const whenCallback = async (payload, respond) => {
+      console.log('RECEIVED', event, payload);
       const response = await job(payload)
       respond && respond(response)
     }
@@ -24,6 +25,7 @@ module.exports = class Client {
   }
 
   emit(event, payload) {
+    console.log('SEND', event, payload)
     return this.socket.emit(event, payload)
   }
 

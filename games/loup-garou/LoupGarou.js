@@ -66,17 +66,22 @@ module.exports = class LoupGarou {
         client.when(phase.name, (...params) => this.run(phase.name, client, ...params))
       }
     }
-    return this.playerJoin.run(client)
+    return this.playerJoin['join game'](client)
   }
 
-  run(event, client, ...params) {
+  run(phaseEvent, client, ...params) {
     if (!this.phase) {
-      console.log(`run(${event}, ${client.getUser().name}) but no phase.`)
+      console.log(`invalid run(${phaseEvent}, ${client.getUser().name}) but no phase.`)
       return
     }
-    if (this.phase.events && this.phase.events.includes(event)) return this.phase[event](client, ...params)
-    if (event === this.phase.name) return this.phase.run(client, ...params)
-    console.log(`run ${event} !== ${this.phase.name} by ${client && client.getUser() && client.getUser().name}`)
+    if (this.phase.events && this.phase.events.includes(phaseEvent)) return this.phase[phaseEvent](client, ...params)
+    if (phaseEvent === this.phase.name) return this.phase.run(client, ...params)
+    this.logInvalidRun(phaseEvent, client);
+  }
+
+  logInvalidRun(phaseEvent, client){
+    const caller = client && client.getUser() && client.getUser().name;
+    console.log(`invalid run(${phaseEvent}, ${caller}) in phase ${this.phase.name}`)
   }
 
   async next() {
@@ -94,6 +99,7 @@ module.exports = class LoupGarou {
     this.phaseIndex = index
     if (this.phaseIndex >= this.phases.length) await this.goToWolfKillPhase()
     this.phase = this.phases[this.phaseIndex]
+    console.log("GO PHASE", this.phase.name);
     this.store.setPhase(this.phase.name)
     await this.hostClient.emitTo(this.getId(), `start phase: ${this.phase.name}`)
     this.phase.start && await this.phase.start()
