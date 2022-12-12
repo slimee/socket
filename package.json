@@ -7,7 +7,7 @@
   "license": "BSD",
   "dependencies": {
     "chai": "^4.2.0",
-    "express": "4.17.1",
+    "express": "4.17.3",
     "global": "^4.4.0",
     "jest": "25.2.7",
     "socket.io": "^2.3.0"
