@@ -24,6 +24,7 @@ module.exports = class WolfKill {
     return { role }
   }
 
+
   checkEnd() {
     if (this.voyantesVoted()) return this.end()
   }
